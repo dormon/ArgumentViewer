@@ -841,7 +841,7 @@ TYPE ArgumentViewerImpl::getArgumentWithFormat(std::string const &argument,
     if (singleValueFormat->defaults != def)
       throw ex::Exception(
           std::string("argument: ") + argument +
-          " has already been defined with different default value: ");
+          " has already been defined with different default value: "+txtUtils::valueToString(singleValueFormat->defaults));
   } else
     alf->formats[argument] =
         std::make_shared<SingleValueFormat<TYPE>>(argument, def, com);
@@ -1171,7 +1171,7 @@ std::vector<std::string> ArgumentViewer::getsv(
     if (stringVectorFormat->defaults != def)
       throw ex::Exception(
           std::string("argument: ") + argument +
-          " has already been defined with different default values: ");
+          " has already been defined with different default values: "+txtUtils::valueToString(stringVectorFormat->defaults));
   } else
     alf->formats[argument] =
         std::make_shared<StringVectorFormat>(argument, def, com);
