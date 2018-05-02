@@ -82,17 +82,18 @@ light { - attributes of light source
                        movable
                        scriptable
                        printable}     [string*] - additional attributes
-    bytesPerColor    = 1 2 1          [u32*   ] - number of bytes per color
-channel
-    bytesPerPosition = 4 8 4          [u64*   ] - number of bytes per position
-position
-    directional                                 - changes omnidirectional
-light into directional
+    bytesPerColor    = 1 2 1          [u32*   ] - number of bytes per color channel
+    bytesPerPosition = 4 8 4          [u64*   ] - number of bytes per position position
+    directional                                 - changes omnidirectional light into directional
     sampling         = 10 10 0 0 0 0
                        0 0 0 1 128 1
-                       3              [i32*   ] - sampling of area light
-sources
+                       3              [i32*   ] - sampling of area light sources
     soffset          = 0 0            [i64*   ] - offset of sampling area
   }
 }
 ```
+## Exceptions
+ArgumentViewer throws two kinds of exceptions - argumentViewer::ex::Exception and argumentViewer::ex::MatchError.
+Exceptions are inherited from std::runtime_error.
+ex::MatchError is thrown if you pass wrong arguments to the application.
+ex::Exception is thrown if you make an error in creation of ArgumentViewer object.
