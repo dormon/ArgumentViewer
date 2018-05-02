@@ -45,7 +45,24 @@ int main(int argc,char*argv[]){
 
 ## Features
 * Arguments in text file
+```
+$ ./yourApp --param 1 \< file.txt
+```
 * Context of arguments
+```cpp
+//You can specify context of arguments - cathegory of arguments
+auto a= make_shared<ArgumentViewer>(argc,argv);
+auto skip     = a->isPresent("--skip");
+auto run      = a->isPresent("--run");
+auto play     = a->isPresent("--play");
+auto send_msg = a->isPresent("--send_msg");
+light.att = a->getContext("light")->isPresent("att");
+light.col = a->getContext("light")->getf32v("color");
+light.pos = a->getContext("light")->getf32v("pos");
+```
+```
+$ ./yourApp --skip light \{ att color 1.f 1.f 1.f pos 0.f 0.f 0.f \}
+```
 * Automatic help / nice help output
 ```
 #example of help output
