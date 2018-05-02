@@ -24,6 +24,8 @@ set(SOURCES
 
 set(INCLUDES
   src/${LIB_NAME}/ArgumentViewer.h
+  src/${LIB_NAME}/Fwd.h
+  src/${LIB_NAME}/Exception.h
   )
 
 add_library(${LIB_NAME} SHARED ${SOURCES} ${INCLUDES})
@@ -92,7 +94,8 @@ install(EXPORT ${LIB_NAME}Targets
 
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}/${LIB_NAME}Config.cmake
   "include(CMakeFindDependencyMacro)\n"
-  "find_dependency(SDL2)\n"
+  "find_dependency(MealyMachine 1.0)\n"
+  "find_dependency(TxtUtils 1.0)\n"
   "include($" "{CMAKE_CURRENT_LIST_DIR}/${LIB_NAME}Targets.cmake)\n"
   )
 

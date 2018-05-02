@@ -1,14 +1,10 @@
 #pragma once
 
 #include <ArgumentViewer/argumentviewer_export.h>
+#include <ArgumentViewer/Fwd.h>
 #include <iostream>
 #include <memory>
 #include <vector>
-
-namespace argumentViewer {
-class ArgumentViewerImpl;
-class ArgumentViewer;
-}  // namespace argumentViewer
 
 class ARGUMENTVIEWER_EXPORT argumentViewer::ArgumentViewer {
  public:
