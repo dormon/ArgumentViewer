@@ -1,10 +1,19 @@
 # ArgumentViewer
 Simple cpp library for command line argument parsing.
+
 ## Building
 The library depends on two other libraries:
 [MealyMachine](https://github.com/dormon/MealyMachine)
 [TxtUtils](https://github.com/dormon/TxtUtils)
+```
+$ mkdir build
+$ cd build
+$ cmake-gui .. # or ccmake ..
+$ #set MEALYMACHINE_DIR and TXTUTILS_DIR to paths to MealyMachineConfig.cmake and TxtUtilsConfig.cmake
+$ make
+```
 You have to build and install these libraries first.
+
 ## How to use this library
 ```cpp
 
@@ -33,3 +42,8 @@ int main(int argc,char*argv[]){
 }
 
 ```
+
+## Features
+* Arguments in text file
+* Context of arguments
+* Automatic help / nice help output
