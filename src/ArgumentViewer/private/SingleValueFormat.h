@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ArgumentViewer/ValueFormat.h>
-#include <ArgumentViewer/CommonFunctions.h>
+#include <ArgumentViewer/private/ValueFormat.h>
+#include <ArgumentViewer/private/CommonFunctions.h>
 
 using namespace argumentViewer;
 

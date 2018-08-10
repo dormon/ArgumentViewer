@@ -12,15 +12,15 @@ find_package(MealyMachine 1.0 CONFIG REQUIRED)
 
 set(SOURCES
   src/${PROJECT_NAME}/ArgumentViewer.cpp
-  src/${PROJECT_NAME}/ArgumentViewerImpl.cpp
-  src/${PROJECT_NAME}/ValueFormat.cpp
-  src/${PROJECT_NAME}/CommonFunctions.cpp
-  src/${PROJECT_NAME}/LineSplitter.cpp
-  src/${PROJECT_NAME}/IsPresentFormat.cpp
-  src/${PROJECT_NAME}/Globals.cpp
-  src/${PROJECT_NAME}/ArgumentListFormat.cpp
-  src/${PROJECT_NAME}/ContextFormat.cpp
-  src/${PROJECT_NAME}/StringVectorFormat.cpp
+  src/${PROJECT_NAME}/private/ArgumentViewerImpl.cpp
+  src/${PROJECT_NAME}/private/ValueFormat.cpp
+  src/${PROJECT_NAME}/private/CommonFunctions.cpp
+  src/${PROJECT_NAME}/private/LineSplitter.cpp
+  src/${PROJECT_NAME}/private/IsPresentFormat.cpp
+  src/${PROJECT_NAME}/private/Globals.cpp
+  src/${PROJECT_NAME}/private/ArgumentListFormat.cpp
+  src/${PROJECT_NAME}/private/ContextFormat.cpp
+  src/${PROJECT_NAME}/private/StringVectorFormat.cpp
   )
 
 set(INCLUDES
@@ -30,18 +30,18 @@ set(INCLUDES
   )
 
 set(PRIVATE_INCLUDES
-  src/${PROJECT_NAME}/ArgumentViewerImpl.h
-  src/${PROJECT_NAME}/Format.h
-  src/${PROJECT_NAME}/ValueFormat.h
-  src/${PROJECT_NAME}/SingleValueFormat.h
-  src/${PROJECT_NAME}/LineSplitter.h
-  src/${PROJECT_NAME}/VectorFormat.h
-  src/${PROJECT_NAME}/StringVectorFormat.h
-  src/${PROJECT_NAME}/IsPresentFormat.h
-  src/${PROJECT_NAME}/ArgumentListFormat.h
-  src/${PROJECT_NAME}/ContextFormat.h
-  src/${PROJECT_NAME}/CommonFunctions.h
-  src/${PROJECT_NAME}/Globals.h
+  src/${PROJECT_NAME}/private/ArgumentViewerImpl.h
+  src/${PROJECT_NAME}/private/Format.h
+  src/${PROJECT_NAME}/private/ValueFormat.h
+  src/${PROJECT_NAME}/private/SingleValueFormat.h
+  src/${PROJECT_NAME}/private/LineSplitter.h
+  src/${PROJECT_NAME}/private/VectorFormat.h
+  src/${PROJECT_NAME}/private/StringVectorFormat.h
+  src/${PROJECT_NAME}/private/IsPresentFormat.h
+  src/${PROJECT_NAME}/private/ArgumentListFormat.h
+  src/${PROJECT_NAME}/private/ContextFormat.h
+  src/${PROJECT_NAME}/private/CommonFunctions.h
+  src/${PROJECT_NAME}/private/Globals.h
   )
 
 option(BUILD_SHARED_LIBS "build this library as shared")

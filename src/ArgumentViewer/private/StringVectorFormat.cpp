@@ -1,7 +1,7 @@
 #include <ArgumentViewer/Exception.h>
-#include <ArgumentViewer/Globals.h>
-#include <ArgumentViewer/LineSplitter.h>
-#include <ArgumentViewer/StringVectorFormat.h>
+#include <ArgumentViewer/private/Globals.h>
+#include <ArgumentViewer/private/LineSplitter.h>
+#include <ArgumentViewer/private/StringVectorFormat.h>
 
 using namespace argumentViewer::ex;
 

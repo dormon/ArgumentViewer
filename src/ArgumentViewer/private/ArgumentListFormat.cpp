@@ -1,7 +1,7 @@
-#include <ArgumentViewer/ArgumentListFormat.h>
-#include <ArgumentViewer/CommonFunctions.h>
 #include <ArgumentViewer/Exception.h>
-#include <ArgumentViewer/ContextFormat.h>
+#include <ArgumentViewer/private/ContextFormat.h>
+#include <ArgumentViewer/private/ArgumentListFormat.h>
+#include <ArgumentViewer/private/CommonFunctions.h>
 #include <set>
 
 using namespace argumentViewer::ex;

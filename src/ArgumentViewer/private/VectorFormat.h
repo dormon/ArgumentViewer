@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ArgumentViewer/LineSplitter.h>
-#include <ArgumentViewer/ValueFormat.h>
+#include <ArgumentViewer/private/LineSplitter.h>
+#include <ArgumentViewer/private/ValueFormat.h>
 
 template <typename TYPE>
 class VectorFormat : public ValueFormat {

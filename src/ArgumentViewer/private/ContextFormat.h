@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ArgumentViewer/ArgumentListFormat.h>
-#include <ArgumentViewer/Globals.h>
+#include <ArgumentViewer/private/ArgumentListFormat.h>
+#include <ArgumentViewer/private/Globals.h>
 
 class ContextFormat : public ArgumentListFormat {
  public:

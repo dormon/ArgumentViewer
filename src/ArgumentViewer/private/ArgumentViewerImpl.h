@@ -6,12 +6,12 @@
 #include <sstream>
 #include <TxtUtils/TxtUtils.h>
 #include <ArgumentViewer/Fwd.h>
-#include <ArgumentViewer/Format.h>
-#include <ArgumentViewer/CommonFunctions.h>
-#include <ArgumentViewer/ArgumentListFormat.h>
-#include <ArgumentViewer/SingleValueFormat.h>
-#include <ArgumentViewer/VectorFormat.h>
 #include <ArgumentViewer/Exception.h>
+#include <ArgumentViewer/private/Format.h>
+#include <ArgumentViewer/private/CommonFunctions.h>
+#include <ArgumentViewer/private/ArgumentListFormat.h>
+#include <ArgumentViewer/private/SingleValueFormat.h>
+#include <ArgumentViewer/private/VectorFormat.h>
 
 using namespace argumentViewer;
 

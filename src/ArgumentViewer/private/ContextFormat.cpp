@@ -1,5 +1,5 @@
-#include <ArgumentViewer/ContextFormat.h>
 #include <ArgumentViewer/Exception.h>
+#include <ArgumentViewer/private/ContextFormat.h>
 #include <set>
 
 using namespace argumentViewer::ex;

@@ -1,5 +1,5 @@
-#include <ArgumentViewer/Globals.h>
-#include <ArgumentViewer/LineSplitter.h>
+#include <ArgumentViewer/private/Globals.h>
+#include <ArgumentViewer/private/LineSplitter.h>
 
 string LineSplitter::get() const { return ss.str(); }
 

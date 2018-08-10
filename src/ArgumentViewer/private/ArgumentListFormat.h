@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ArgumentViewer/ValueFormat.h>
+#include <ArgumentViewer/private/ValueFormat.h>
 #include <map>
 #include <memory>
 

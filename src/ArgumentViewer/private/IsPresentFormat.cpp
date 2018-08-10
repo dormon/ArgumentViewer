@@ -1,5 +1,5 @@
-#include <ArgumentViewer/IsPresentFormat.h>
-#include <ArgumentViewer/CommonFunctions.h>
+#include <ArgumentViewer/private/IsPresentFormat.h>
+#include <ArgumentViewer/private/CommonFunctions.h>
 #include <sstream>
 
 IsPresentFormat::IsPresentFormat(string const &name, string const &com)

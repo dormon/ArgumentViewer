@@ -1,5 +1,5 @@
-#include <ArgumentViewer/CommonFunctions.h>
-#include <ArgumentViewer/Globals.h>
+#include <ArgumentViewer/private/CommonFunctions.h>
+#include <ArgumentViewer/private/Globals.h>
 
 string parseEscapeSequence(string const &text) {
   if (text == "\\" + contextBegin) return contextBegin;

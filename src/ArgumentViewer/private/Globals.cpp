@@ -1,4 +1,4 @@
-#include <ArgumentViewer/Globals.h>
+#include <ArgumentViewer/private/Globals.h>
 
 std::string const contextBegin      = "{";
 std::string const contextEnd        = "}";

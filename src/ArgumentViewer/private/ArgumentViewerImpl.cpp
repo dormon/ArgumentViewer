@@ -1,6 +1,6 @@
-#include <ArgumentViewer/ArgumentViewerImpl.h>
 #include <ArgumentViewer/Exception.h>
-#include <ArgumentViewer/Globals.h>
+#include <ArgumentViewer/private/ArgumentViewerImpl.h>
+#include <ArgumentViewer/private/Globals.h>
 
 #include <MealyMachine/MealyMachine.h>
 

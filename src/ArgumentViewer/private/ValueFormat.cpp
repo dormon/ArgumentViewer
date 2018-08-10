@@ -1,5 +1,5 @@
-#include <ArgumentViewer/ValueFormat.h>
-#include <ArgumentViewer/CommonFunctions.h>
+#include <ArgumentViewer/private/ValueFormat.h>
+#include <ArgumentViewer/private/CommonFunctions.h>
 
 ValueFormat::ValueFormat(string const &argument, string const &com)
     : Format(com), argumentName(argument) {}

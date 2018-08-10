@@ -2,12 +2,12 @@
 #include <ArgumentViewer/Exception.h>
 #include <MealyMachine/MealyMachine.h>
 #include <TxtUtils/TxtUtils.h>
-#include <ArgumentViewer/ArgumentViewerImpl.h>
-#include <ArgumentViewer/ArgumentListFormat.h>
-#include <ArgumentViewer/IsPresentFormat.h>
-#include <ArgumentViewer/CommonFunctions.h>
-#include <ArgumentViewer/StringVectorFormat.h>
-#include <ArgumentViewer/ContextFormat.h>
+#include <ArgumentViewer/private/ArgumentViewerImpl.h>
+#include <ArgumentViewer/private/ArgumentListFormat.h>
+#include <ArgumentViewer/private/IsPresentFormat.h>
+#include <ArgumentViewer/private/CommonFunctions.h>
+#include <ArgumentViewer/private/StringVectorFormat.h>
+#include <ArgumentViewer/private/ContextFormat.h>
 
 #include <algorithm>
 #include <cassert>

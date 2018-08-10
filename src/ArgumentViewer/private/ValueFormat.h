@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ArgumentViewer/Format.h>
+#include <ArgumentViewer/private/Format.h>
 #include <sstream>
 
 class ValueFormat : public Format {
