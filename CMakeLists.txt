@@ -12,12 +12,36 @@ find_package(MealyMachine 1.0 CONFIG REQUIRED)
 
 set(SOURCES
   src/${PROJECT_NAME}/ArgumentViewer.cpp
+  src/${PROJECT_NAME}/ArgumentViewerImpl.cpp
+  src/${PROJECT_NAME}/ValueFormat.cpp
+  src/${PROJECT_NAME}/CommonFunctions.cpp
+  src/${PROJECT_NAME}/LineSplitter.cpp
+  src/${PROJECT_NAME}/IsPresentFormat.cpp
+  src/${PROJECT_NAME}/Globals.cpp
+  src/${PROJECT_NAME}/ArgumentListFormat.cpp
+  src/${PROJECT_NAME}/ContextFormat.cpp
+  src/${PROJECT_NAME}/StringVectorFormat.cpp
   )
 
 set(INCLUDES
   src/${PROJECT_NAME}/ArgumentViewer.h
   src/${PROJECT_NAME}/Fwd.h
   src/${PROJECT_NAME}/Exception.h
+  )
+
+set(PRIVATE_INCLUDES
+  src/${PROJECT_NAME}/ArgumentViewerImpl.h
+  src/${PROJECT_NAME}/Format.h
+  src/${PROJECT_NAME}/ValueFormat.h
+  src/${PROJECT_NAME}/SingleValueFormat.h
+  src/${PROJECT_NAME}/LineSplitter.h
+  src/${PROJECT_NAME}/VectorFormat.h
+  src/${PROJECT_NAME}/StringVectorFormat.h
+  src/${PROJECT_NAME}/IsPresentFormat.h
+  src/${PROJECT_NAME}/ArgumentListFormat.h
+  src/${PROJECT_NAME}/ContextFormat.h
+  src/${PROJECT_NAME}/CommonFunctions.h
+  src/${PROJECT_NAME}/Globals.h
   )
 
 option(BUILD_SHARED_LIBS "build this library as shared")
@@ -27,7 +51,7 @@ SET(CMAKE_RELEASE_POSTFIX "" CACHE STRING "add a postfix, usually empty on windo
 SET(CMAKE_RELWITHDEBINFO_POSTFIX "rd" CACHE STRING "add a postfix, usually empty on windows")
 SET(CMAKE_MINSIZEREL_POSTFIX "s" CACHE STRING "add a postfix, usually empty on windows")
 
-add_library(${PROJECT_NAME} ${SOURCES} ${INCLUDES})
+add_library(${PROJECT_NAME} ${SOURCES} ${INCLUDES} ${PRIVATE_INCLUDES})
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 include(GNUInstallDirs)
