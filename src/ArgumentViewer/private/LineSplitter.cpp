@@ -1,11 +1,14 @@
 #include <ArgumentViewer/private/Globals.h>
 #include <ArgumentViewer/private/LineSplitter.h>
+#include <ArgumentViewer/private/CommonFunctions.h>
 
 string LineSplitter::get() const { return ss.str(); }
 
 void LineSplitter::addString(string const &text) {
-  if (ss.str().length() - lineStart + 1 + text.length() >= maxDataLineLength) {
-    ss << endl;
+  auto const lineLength = ss.str().length() - lineStart + 1;
+  auto const wouldOverflow = lineLength + text.length() >= maxDataLineLength;
+  if (wouldOverflow) {
+    writeLineEnd(ss);
     lineStart = ss.str().length();
     if (text == " ") return;
   }

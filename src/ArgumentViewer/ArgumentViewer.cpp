@@ -32,15 +32,15 @@ using namespace argumentViewer;
 ArgumentViewer::ArgumentViewer(int argc, char *argv[]) {
   if (argc <= 0)
     throw ex::Exception("number of arguments has to be greater than 0");
-  _impl = std::unique_ptr<ArgumentViewerImpl>(new ArgumentViewerImpl);
-  assert(_impl != nullptr);
-  _impl->applicationName = std::string(argv[0]);
+  impl = std::unique_ptr<ArgumentViewerImpl>(new ArgumentViewerImpl);
+  assert(impl != nullptr);
+  impl->applicationName = std::string(argv[0]);
   std::vector<std::string> args;
   for (int i = 1; i < argc; ++i) args.push_back(std::string(argv[i]));
   std::set<std::string> alreadyLoaded;
-  _impl->loadArgumentFiles(args, alreadyLoaded);
-  _impl->arguments = args;
-  _impl->format    = std::make_shared<ArgumentListFormat>("");
+  impl->loadArgumentFiles(args, alreadyLoaded);
+  impl->arguments = args;
+  impl->format    = std::make_shared<ArgumentListFormat>("");
 }
 
 /**
@@ -54,8 +54,8 @@ ArgumentViewer::~ArgumentViewer() {}
  * @return application name
  */
 std::string ArgumentViewer::getApplicationName() const {
-  assert(_impl != nullptr);
-  return _impl->applicationName;
+  assert(impl != nullptr);
+  return impl->applicationName;
 }
 
 /**
@@ -64,8 +64,8 @@ std::string ArgumentViewer::getApplicationName() const {
  * @return number of arguments without inclusion of application name
  */
 size_t ArgumentViewer::getNofArguments() const {
-  assert(_impl != nullptr);
-  return _impl->arguments.size();
+  assert(impl != nullptr);
+  return impl->arguments.size();
 }
 
 /**
@@ -77,9 +77,9 @@ size_t ArgumentViewer::getNofArguments() const {
  * @return argument
  */
 std::string ArgumentViewer::getArgument(size_t const &index) const {
-  assert(_impl != nullptr);
-  assert(index < _impl->arguments.size());
-  return _impl->arguments.at(index);
+  assert(impl != nullptr);
+  assert(index < impl->arguments.size());
+  return impl->arguments.at(index);
 }
 
 /**
@@ -91,9 +91,9 @@ std::string ArgumentViewer::getArgument(size_t const &index) const {
  */
 bool ArgumentViewer::isPresent(std::string const &argument,
                                std::string const &com) const {
-  assert(_impl != nullptr);
+  assert(impl != nullptr);
 
-  auto alf = std::dynamic_pointer_cast<ArgumentListFormat>(_impl->format);
+  auto alf = std::dynamic_pointer_cast<ArgumentListFormat>(impl->format);
   assert(alf != nullptr);
 
   auto subFormatIt = alf->formats.find(argument);
@@ -108,7 +108,7 @@ bool ArgumentViewer::isPresent(std::string const &argument,
   if (alf->formats[argument]->comment == "")
     alf->formats[argument]->comment = com;
 
-  return _impl->getArgumentPosition(argument) < _impl->arguments.size();
+  return impl->getArgumentPosition(argument) < impl->arguments.size();
 }
 
 /**
@@ -123,8 +123,8 @@ bool ArgumentViewer::isPresent(std::string const &argument,
 float ArgumentViewer::getf32(std::string const &argument,
                              float const &      def,
                              std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentWithFormat<float>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentWithFormat<float>(argument, def, com);
 }
 
 /**
@@ -139,8 +139,8 @@ float ArgumentViewer::getf32(std::string const &argument,
 double ArgumentViewer::getf64(std::string const &argument,
                               double const &     def,
                               std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentWithFormat<double>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentWithFormat<double>(argument, def, com);
 }
 
 /**
@@ -155,8 +155,8 @@ double ArgumentViewer::getf64(std::string const &argument,
 int32_t ArgumentViewer::geti32(std::string const &argument,
                                int32_t const &    def,
                                std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentWithFormat<int32_t>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentWithFormat<int32_t>(argument, def, com);
 }
 
 /**
@@ -171,8 +171,8 @@ int32_t ArgumentViewer::geti32(std::string const &argument,
 int64_t ArgumentViewer::geti64(std::string const &argument,
                                int64_t const &    def,
                                std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentWithFormat<int64_t>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentWithFormat<int64_t>(argument, def, com);
 }
 
 /**
@@ -187,8 +187,8 @@ int64_t ArgumentViewer::geti64(std::string const &argument,
 uint32_t ArgumentViewer::getu32(std::string const &argument,
                                 uint32_t const &   def,
                                 std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentWithFormat<uint32_t>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentWithFormat<uint32_t>(argument, def, com);
 }
 
 /**
@@ -203,8 +203,8 @@ uint32_t ArgumentViewer::getu32(std::string const &argument,
 uint64_t ArgumentViewer::getu64(std::string const &argument,
                                 uint64_t const &   def,
                                 std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentWithFormat<uint64_t>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentWithFormat<uint64_t>(argument, def, com);
 }
 
 /**
@@ -219,9 +219,9 @@ uint64_t ArgumentViewer::getu64(std::string const &argument,
 std::string ArgumentViewer::gets(std::string const &argument,
                                  std::string const &def,
                                  std::string const &com) const {
-  assert(_impl != nullptr);
+  assert(impl != nullptr);
   return parseEscapeSequence(
-      _impl->getArgumentWithFormat<std::string>(argument, def, com));
+      impl->getArgumentWithFormat<std::string>(argument, def, com));
 }
 
 /**
@@ -237,8 +237,8 @@ std::string ArgumentViewer::gets(std::string const &argument,
 std::vector<float> ArgumentViewer::getf32v(std::string const &       argument,
                                            std::vector<float> const &def,
                                            std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentsWithFormat<float>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentsWithFormat<float>(argument, def, com);
 }
 
 /**
@@ -254,8 +254,8 @@ std::vector<float> ArgumentViewer::getf32v(std::string const &       argument,
 std::vector<double> ArgumentViewer::getf64v(std::string const &        argument,
                                             std::vector<double> const &def,
                                             std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentsWithFormat<double>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentsWithFormat<double>(argument, def, com);
 }
 
 /**
@@ -271,8 +271,8 @@ std::vector<double> ArgumentViewer::getf64v(std::string const &        argument,
 std::vector<int32_t> ArgumentViewer::geti32v(std::string const &argument,
                                              std::vector<int32_t> const &def,
                                              std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentsWithFormat<int32_t>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentsWithFormat<int32_t>(argument, def, com);
 }
 
 /**
@@ -288,8 +288,8 @@ std::vector<int32_t> ArgumentViewer::geti32v(std::string const &argument,
 std::vector<int64_t> ArgumentViewer::geti64v(std::string const &argument,
                                              std::vector<int64_t> const &def,
                                              std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentsWithFormat<int64_t>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentsWithFormat<int64_t>(argument, def, com);
 }
 
 /**
@@ -305,8 +305,8 @@ std::vector<int64_t> ArgumentViewer::geti64v(std::string const &argument,
 std::vector<uint32_t> ArgumentViewer::getu32v(std::string const &argument,
                                               std::vector<uint32_t> const &def,
                                               std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentsWithFormat<uint32_t>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentsWithFormat<uint32_t>(argument, def, com);
 }
 
 /**
@@ -322,8 +322,8 @@ std::vector<uint32_t> ArgumentViewer::getu32v(std::string const &argument,
 std::vector<uint64_t> ArgumentViewer::getu64v(std::string const &argument,
                                               std::vector<uint64_t> const &def,
                                               std::string const &com) const {
-  assert(_impl != nullptr);
-  return _impl->getArgumentsWithFormat<uint64_t>(argument, def, com);
+  assert(impl != nullptr);
+  return impl->getArgumentsWithFormat<uint64_t>(argument, def, com);
 }
 
 /**
@@ -336,15 +336,15 @@ std::vector<uint64_t> ArgumentViewer::getu64v(std::string const &argument,
  */
 std::shared_ptr<ArgumentViewer> ArgumentViewer::getContext(
     std::string const &name, std::string const &com) const {
-  assert(_impl != nullptr);
-  auto alf = std::dynamic_pointer_cast<ArgumentListFormat>(_impl->format);
+  assert(impl != nullptr);
+  auto alf = std::dynamic_pointer_cast<ArgumentListFormat>(impl->format);
   assert(alf != nullptr);
 
   auto constructEmptyContext = [&]() {
-    char const *argv[]    = {_impl->applicationName.c_str()};
+    char const *argv[]    = {impl->applicationName.c_str()};
     auto        result    = std::make_shared<ArgumentViewer>(1, (char **)argv);
-    result->_impl->parent = this;
-    result->_impl->format = alf->formats[name];
+    result->impl->parent = this;
+    result->impl->format = alf->formats[name];
     return result;
   };
 
@@ -359,12 +359,12 @@ std::shared_ptr<ArgumentViewer> ArgumentViewer::getContext(
   if (alf->formats[name]->comment == "") alf->formats[name]->comment = com;
 
   std::vector<std::string> subArguments;
-  if (!_impl->getContext(subArguments, name)) return constructEmptyContext();
-  char const *appName[] = {_impl->applicationName.c_str()};
+  if (!impl->getContext(subArguments, name)) return constructEmptyContext();
+  char const *appName[] = {impl->applicationName.c_str()};
   auto        result    = std::make_shared<ArgumentViewer>(1, (char **)appName);
-  result->_impl->parent = this;
-  result->_impl->arguments = subArguments;
-  result->_impl->format    = alf->formats.at(name);
+  result->impl->parent = this;
+  result->impl->arguments = subArguments;
+  result->impl->format    = alf->formats.at(name);
   return result;
 }
 
@@ -382,9 +382,9 @@ std::vector<std::string> ArgumentViewer::getsv(
     std::string const &             argument,
     std::vector<std::string> const &def,
     std::string const &             com) const {
-  assert(_impl != nullptr);
+  assert(impl != nullptr);
 
-  auto alf = std::dynamic_pointer_cast<ArgumentListFormat>(_impl->format);
+  auto alf = std::dynamic_pointer_cast<ArgumentListFormat>(impl->format);
   assert(alf != nullptr);
 
   auto subFormatIt = alf->formats.find(argument);
@@ -407,7 +407,7 @@ std::vector<std::string> ArgumentViewer::getsv(
     alf->formats[argument]->comment = com;
 
   std::vector<std::string> subArguments;
-  if (!_impl->getContext(subArguments, argument)) return def;
+  if (!impl->getContext(subArguments, argument)) return def;
   while (def.size() > subArguments.size())
     subArguments.push_back(def[subArguments.size()]);
   for (auto &x : subArguments) x = parseEscapeSequence(x);
@@ -415,15 +415,15 @@ std::vector<std::string> ArgumentViewer::getsv(
 }
 
 std::string ArgumentViewer::toStr() const {
-  assert(_impl != nullptr);
-  return _impl->format->toStr();
+  assert(impl != nullptr);
+  return impl->format->toStr();
 }
 
 bool ArgumentViewer::validate() const {
-  assert(_impl != nullptr);
-  assert(_impl->format != nullptr);
-  if (_impl->parent != nullptr)
+  assert(impl != nullptr);
+  assert(impl->format != nullptr);
+  if (impl->parent != nullptr)
     throw ex::Exception("validation cannot be run on sub ArgumentViewer");
   size_t index = 0;
-  return _impl->format->match(_impl->arguments, index) == Format::MATCH_SUCCESS;
+  return impl->format->match(impl->arguments, index) == Format::MATCH_SUCCESS;
 }

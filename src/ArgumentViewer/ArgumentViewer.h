@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ArgumentViewer/argumentviewer_export.h>
 #include <ArgumentViewer/Fwd.h>
+#include <ArgumentViewer/argumentviewer_export.h>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -58,11 +58,12 @@ class ARGUMENTVIEWER_EXPORT argumentViewer::ArgumentViewer {
                                         std::vector<std::string> const& def = {},
                                         std::string const& comment = "") const;
   std::shared_ptr<ArgumentViewer> getContext(
-      std::string const& name, std::string const& comment = "") const;
+      std::string const& name,
+      std::string const& comment = "") const;
   bool        validate() const;
   std::string toStr() const;
 
  protected:
-  std::unique_ptr<ArgumentViewerImpl> _impl;
+  std::unique_ptr<ArgumentViewerImpl> impl;
   friend class ArgumentViewerImpl;
 };

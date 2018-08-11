@@ -54,19 +54,19 @@ xpix   = 1000 [i32] - x size of window in pixels
 yoff   = 0    [u64] - y offset of window
 ypix   = 1331 [i64] - y size of window in pixels
 light { - attributes of light source
-  color    = 1 0 0  [f64*  ] - normalized color
-  name     = light  [string] - name identificator
-  position = 0 0 0  [f32*  ] - world space position
+  color    = 1 0 0 [f64*  ] - normalized color
+  name     = light [string] - name identificator
+  position = 0 0 0 [f32*  ] - world space position
   info { - additional informations
-    attributes       = {castShadows 
-                       movable 
-                       scriptable 
+    attributes       = {castShadows  
+                       movable       
+                       scriptable    
                        printable}     [string*] - additional attributes
     bytesPerColor    = 1 2 1          [u32*   ] - number of bytes per color channel
     bytesPerPosition = 4 8 4          [u64*   ] - number of bytes per position
     directional                                 - changes omnidirectional light into directional
-    sampling         = 10 10 0 0 0 0
-                       0 0 0 1 128 1
+    sampling         = 10 10 0 0 0 0 
+                       0 0 0 1 128 1 
                        3              [i32*   ] - sampling of area light sources
     soffset          = 0 0            [i64*   ] - offset of sampling area
   }

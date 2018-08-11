@@ -1,7 +1,9 @@
 #pragma once
 
+#include <ArgumentViewer/private/CommonFunctions.h>
 #include <ArgumentViewer/private/LineSplitter.h>
 #include <ArgumentViewer/private/ValueFormat.h>
+#include <TxtUtils/TxtUtils.h>
 
 template <typename TYPE>
 class VectorFormat : public ValueFormat {
@@ -15,18 +17,21 @@ class VectorFormat : public ValueFormat {
   virtual string      getType() const override;
   virtual MatchStatus match(vector<string> const &args,
                             size_t &              index) const override;
+ private:
+  void writeDefaultsToSplitter(LineSplitter&splitter)const;
 };
 
 template <typename TYPE>
 VectorFormat<TYPE>::VectorFormat(string const &      argument,
                                  vector<TYPE> const &defs,
                                  string const &      com)
-    : ValueFormat(argument, com), defaults(defs) {}
+    : ValueFormat(argument, com), defaults(defs)
+{
+}
+
 
 template <typename TYPE>
-string VectorFormat<TYPE>::getData() const {
-  stringstream ss;
-  LineSplitter splitter;
+void VectorFormat<TYPE>::writeDefaultsToSplitter(LineSplitter&splitter)const{
   bool         first = true;
   for (auto const &x : defaults) {
     if (first)
@@ -35,31 +40,36 @@ string VectorFormat<TYPE>::getData() const {
       splitter.addString(" ");
     splitter.addString(txtUtils::valueToString(x));
   }
+}
+
+template <typename TYPE>
+string VectorFormat<TYPE>::getData() const
+{
+  LineSplitter splitter;
+  writeDefaultsToSplitter(splitter);
   return splitter.get();
 }
 
 template <typename TYPE>
-size_t VectorFormat<TYPE>::getDataLength() const {
-  auto   text      = getData();
+size_t VectorFormat<TYPE>::getDataLength() const
+{
+  auto const text      = getData();
+  auto const lines     = splitString(text,"\n");
   size_t maxLength = 0;
-  size_t lineStart = 0;
-  size_t lineEnd;
-  while ((lineEnd = text.find("\n", lineStart)) != string::npos) {
-    maxLength = max(maxLength, lineEnd - lineStart + 1);
-    lineStart = lineEnd + 1;
-  }
-  maxLength = max(maxLength, text.length() - lineStart + 1);
+  for(auto const&line:lines)maxLength = max(maxLength,line.length());
   return maxLength;
 }
 
 template <typename TYPE>
-string VectorFormat<TYPE>::getType() const {
+string VectorFormat<TYPE>::getType() const
+{
   return typeName<TYPE>() + "*";
 }
 
 template <typename TYPE>
 Format::MatchStatus VectorFormat<TYPE>::match(vector<string> const &args,
-                                      size_t &              index) const {
+                                              size_t &              index) const
+{
   if (index >= args.size()) return MATCH_FAILURE;
   if (args.at(index) != argumentName) return MATCH_FAILURE;
   ++index;

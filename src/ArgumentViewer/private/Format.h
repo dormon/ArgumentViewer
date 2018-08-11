@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -23,4 +24,10 @@ class Format {
                             size_t maxTypeSize = 0) const = 0;
   virtual MatchStatus match(vector<string> const &args,
                             size_t &              index) const          = 0;
+ protected:
+  void writeComment(stringstream&ss)const;
 };
+
+void writeIndentation(stringstream&ss,size_t indentation);
+void writeSpaces(stringstream&ss,size_t nofSpaces);
+void writeAlignedString(stringstream &ss, string const &txt, size_t size);

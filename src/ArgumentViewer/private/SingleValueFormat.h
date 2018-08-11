@@ -3,8 +3,6 @@
 #include <ArgumentViewer/private/ValueFormat.h>
 #include <ArgumentViewer/private/CommonFunctions.h>
 
-using namespace argumentViewer;
-
 template <typename TYPE>
 class SingleValueFormat : public ValueFormat {
  public:
@@ -26,9 +24,7 @@ template <typename TYPE>
 string SingleValueFormat<TYPE>::getData() const {
   if (is_same<TYPE, string>::value) {
     auto x = txtUtils::valueToString(defaults);
-    x      = x.substr(1);
-    x      = x.substr(0, x.length() - 1);
-    return x;
+    return chopQuotes(x);
   }
   return txtUtils::valueToString(defaults);
 }

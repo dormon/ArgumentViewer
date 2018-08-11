@@ -13,6 +13,7 @@ find_package(MealyMachine 1.0 CONFIG REQUIRED)
 set(SOURCES
   src/${PROJECT_NAME}/ArgumentViewer.cpp
   src/${PROJECT_NAME}/private/ArgumentViewerImpl.cpp
+  src/${PROJECT_NAME}/private/Format.cpp
   src/${PROJECT_NAME}/private/ValueFormat.cpp
   src/${PROJECT_NAME}/private/CommonFunctions.cpp
   src/${PROJECT_NAME}/private/LineSplitter.cpp

@@ -17,4 +17,6 @@ class ValueFormat : public Format {
                             size_t maxNameSize,
                             size_t maxDataSize,
                             size_t maxTypeSize) const override final;
+ protected:
+  void writeData(stringstream&ss,size_t maxDataSize)const;
 };

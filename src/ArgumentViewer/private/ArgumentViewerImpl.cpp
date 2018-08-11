@@ -46,6 +46,20 @@ bool ArgumentViewerImpl::getContext(std::vector<std::string> &contextArguments,
   return false;
 }
 
+
+bool ArgumentViewerImpl::isInRange(size_t index) const
+{
+  assert(this != nullptr);
+  return index < arguments.size();
+}
+
+std::string ArgumentViewerImpl::getArgument(size_t index) const
+{
+  assert(this != nullptr);
+  assert(index < arguments.size());
+  return arguments.at(index);
+}
+
 void ArgumentViewerImpl::loadArgumentFiles(
     std::vector<std::string> &args, std::set<std::string> &alreadyLoaded) {
   size_t argumentIndex = 0;
