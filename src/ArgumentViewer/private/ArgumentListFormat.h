@@ -15,4 +15,15 @@ class ArgumentListFormat : public Format {
   virtual MatchStatus             match(vector<string> const &args,
                                         size_t &              index) const override;
   map<string, shared_ptr<Format>> formats;
+
+ protected:
+  void getLargestLengths(size_t &nameLength,
+                         size_t &dataLength,
+                         size_t &typeLength) const;
+  void writeIndentedNonContextFormats(stringstream &ss,
+                                      size_t        nameLength,
+                                      size_t        dataLength,
+                                      size_t        typeLength,
+                                      size_t        indent) const;
+  void writeContextFormats(stringstream &ss, size_t indent) const;
 };
