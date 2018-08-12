@@ -108,6 +108,8 @@ Format::MatchStatus ArgumentListFormat::match(vector<string> const &args,
 
     throwIfFormatForRemovalIsEmpty(formatForRemoval,args,index);
 
+    unusedFormats.erase(formatForRemoval);
+
   }
   return MATCH_SUCCESS;
 }
