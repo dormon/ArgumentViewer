@@ -13,6 +13,18 @@ bool isContextFormat(shared_ptr<Format> const &x)
   return isTypeOf<ContextFormat>(x);
 }
 
+void updateLengthsIfFoundLarger(
+    size_t &nameLength,
+    size_t &dataLength,
+    size_t &typeLength,
+    shared_ptr<Format>const&format){
+  auto vf = dynamic_pointer_cast<ValueFormat>(format);
+  if (!vf) return;
+  nameLength = max(nameLength, vf->getName().length());
+  dataLength = max(dataLength, vf->getDataLength());
+  typeLength = max(typeLength, vf->getType().length());
+}
+
 void ArgumentListFormat::getLargestLengths(size_t &nameLength,
                                            size_t &dataLength,
                                            size_t &typeLength) const
@@ -20,13 +32,19 @@ void ArgumentListFormat::getLargestLengths(size_t &nameLength,
   nameLength = 0;
   dataLength = 0;
   typeLength = 0;
-  for (auto const &x : formats) {
-    auto vf = dynamic_pointer_cast<ValueFormat>(x.second);
-    if (!vf) continue;
-    nameLength = max(nameLength, vf->getName().length());
-    dataLength = max(dataLength, vf->getDataLength());
-    typeLength = max(typeLength, vf->getType().length());
-  }
+  for (auto const &x : formats)
+    updateLengthsIfFoundLarger(nameLength,dataLength,typeLength,x.second);
+}
+
+void writeNonContextFormat(stringstream &            ss,
+                           shared_ptr<Format> const &format,
+                           size_t                    nameLength,
+                           size_t                    dataLength,
+                           size_t                    typeLength,
+                           size_t                    indent)
+{
+  if (isContextFormat(format)) return;
+  ss << format->toStr(indent, nameLength, dataLength, typeLength);
 }
 
 void ArgumentListFormat::writeIndentedNonContextFormats(stringstream &ss,
@@ -35,21 +53,23 @@ void ArgumentListFormat::writeIndentedNonContextFormats(stringstream &ss,
                                                         size_t typeLength,
                                                         size_t indent) const
 {
-  for (auto const &x : formats) {
-    auto const &format = x.second;
-    if (isContextFormat(format)) continue;
-    ss << format->toStr(indent, nameLength, dataLength, typeLength);
-  }
+  for (auto const &x : formats)
+    writeNonContextFormat(ss, x.second, nameLength, dataLength, typeLength,
+                          indent);
+}
+
+void writeContextFormat(stringstream &            ss,
+                        shared_ptr<Format> const &format,
+                        size_t                    indent)
+{
+  if (!isContextFormat(format)) return;
+  ss << format->toStr(indent);
 }
 
 void ArgumentListFormat::writeContextFormats(stringstream &ss,
                                              size_t        indent) const
 {
-  for (auto const &x : formats) {
-    auto const &format = x.second;
-    if (!isContextFormat(format)) continue;
-    ss << format->toStr(indent);
-  }
+  for (auto const &x : formats) writeContextFormat(ss, x.second, indent);
 }
 
 string ArgumentListFormat::toStr(size_t indent, size_t, size_t, size_t) const
@@ -65,8 +85,11 @@ string ArgumentListFormat::toStr(size_t indent, size_t, size_t, size_t) const
   return ss.str();
 }
 
-void throwIfUnusedFormatsIsEmpty(set<string>const&unusedFormats,vector<string>const&args,size_t&index){
-  if(!unusedFormats.empty())return;
+void throwIfUnusedFormatsIsEmpty(set<string> const &   unusedFormats,
+                                 vector<string> const &args,
+                                 size_t &              index)
+{
+  if (!unusedFormats.empty()) return;
   stringstream ss;
   ss << "Argument error:" << endl;
   ss << "following arguments cannot be matched: " << endl;
@@ -74,7 +97,10 @@ void throwIfUnusedFormatsIsEmpty(set<string>const&unusedFormats,vector<string>co
   throw MatchError(ss.str());
 }
 
-void throwIfFormatForRemovalIsEmpty(string const&formatForRemoval,vector<string>const&args,size_t&index){
+void throwIfFormatForRemovalIsEmpty(string const &        formatForRemoval,
+                                    vector<string> const &args,
+                                    size_t &              index)
+{
   if (formatForRemoval != "") return;
   stringstream ss;
   ss << "Argument error:" << endl;
@@ -90,8 +116,7 @@ Format::MatchStatus ArgumentListFormat::match(vector<string> const &args,
   set<string> unusedFormats;
   for (auto const &x : formats) unusedFormats.insert(x.first);
   while (index < args.size()) {
-
-    throwIfUnusedFormatsIsEmpty(unusedFormats,args,index);
+    throwIfUnusedFormatsIsEmpty(unusedFormats, args, index);
 
     string formatForRemoval = "";
     for (auto const &f : unusedFormats) {
@@ -106,10 +131,9 @@ Format::MatchStatus ArgumentListFormat::match(vector<string> const &args,
       }
     }
 
-    throwIfFormatForRemovalIsEmpty(formatForRemoval,args,index);
+    throwIfFormatForRemovalIsEmpty(formatForRemoval, args, index);
 
     unusedFormats.erase(formatForRemoval);
-
   }
   return MATCH_SUCCESS;
 }
