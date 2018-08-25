@@ -20,7 +20,7 @@ class Format {
   };
   virtual string      toStr(size_t indent      = 0,
                             size_t maxNameSize = 0,
-                            size_t maxDataSize = 0,
+                            size_t maxDefaultsSize = 0,
                             size_t maxTypeSize = 0) const = 0;
   virtual MatchStatus match(vector<string> const &args,
                             size_t &              index) const          = 0;

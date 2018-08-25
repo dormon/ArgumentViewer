@@ -9,7 +9,7 @@ ValueFormat::ValueFormat(string const &argument, string const &com)
 
 string ValueFormat::getName() const { return argumentName; }
 
-size_t ValueFormat::getDataLength() const { return getData().length(); }
+size_t ValueFormat::getDefaultsLength() const { return getDefaults().length(); }
 
 void writeTypePreDecorator(stringstream &ss) { ss << typePreDecorator; }
 
@@ -24,30 +24,39 @@ void writeAlignedType(stringstream &ss, string const &type, size_t maxTypeSize)
   writeTypePostDecorator(ss);
 }
 
-void ValueFormat::writeData(stringstream&ss,size_t maxDataSize)const{
+void ifNotFirstLineWriteIndentation(stringstream&ss,size_t i,size_t firstLine,size_t indentation){
+  if(i == firstLine)return;
+  writeIndentation(ss,indentation);
+}
+void ifNotLastLineWriteLineEnd(stringstream&ss,size_t i,size_t lastLine){
+  if(i == lastLine )return;
+  writeLineEnd(ss);
+}
+
+void ValueFormat::writeDefaults(stringstream&ss,size_t maxDefaultsSize)const{
   size_t const indentation = ss.str().length();
-  auto const lines = splitString(getData(),"\n");
+  auto const lines = splitString(getDefaults(),"\n");
   size_t const firstLine = 0;
   size_t const lastLine = lines.size()-1;
   for(size_t i=0;i<lines.size();++i){
-    if(i != firstLine)writeIndentation(ss,indentation);
-    writeAlignedString(ss,lines[i],maxDataSize);
-    if(i != lastLine )writeLineEnd(ss);
+    ifNotFirstLineWriteIndentation(ss,i,firstLine,indentation);
+    writeAlignedString(ss,lines[i],maxDefaultsSize);
+    ifNotLastLineWriteLineEnd(ss,i,lastLine);
   }
-  if(lines.empty())
-    writeSpaces(ss,maxDataSize);
+  if(!lines.empty())return;
+  writeSpaces(ss,maxDefaultsSize);
 }
 
 string ValueFormat::toStr(size_t indent,
                           size_t maxNameSize,
-                          size_t maxDataSize,
+                          size_t maxDefaultsSize,
                           size_t maxTypeSize) const
 {
   stringstream ss;
   writeIndentation(ss, indent);
   writeAlignedString(ss, getName(), maxNameSize);
   writeDefaultsSeparator(ss);
-  writeData(ss,maxDataSize);
+  writeDefaults(ss,maxDefaultsSize);
   writeAlignedType(ss, getType(), maxTypeSize);
   writeComment(ss);
   writeLineEnd(ss);

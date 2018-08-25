@@ -10,7 +10,7 @@ StringVectorFormat::StringVectorFormat(string const &        argument,
                                        string const &        com)
     : ValueFormat(argument, com), defaults(defs) {}
 
-string StringVectorFormat::getData() const {
+string StringVectorFormat::getDefaults() const {
   LineSplitter splitter;
   splitter.addString(contextBegin);
   bool first = true;
@@ -25,16 +25,16 @@ string StringVectorFormat::getData() const {
   return splitter.get();
 }
 
-size_t StringVectorFormat::getDataLength() const {
-  auto   data          = getData();
+size_t StringVectorFormat::getDefaultsLength() const {
+  auto   defaults      = getDefaults();
   size_t maxLineLength = 0;
   size_t lineStart     = 0;
   size_t lineEnd;
-  while ((lineEnd = data.find("\n", lineStart)) != string::npos) {
+  while ((lineEnd = defaults.find("\n", lineStart)) != string::npos) {
     maxLineLength = max(maxLineLength, lineEnd - lineStart + 1);
     lineStart     = lineEnd + 1;
   }
-  maxLineLength = max(maxLineLength, data.length() - lineStart + 1);
+  maxLineLength = max(maxLineLength, defaults.length() - lineStart + 1);
   return maxLineLength;
 }
 

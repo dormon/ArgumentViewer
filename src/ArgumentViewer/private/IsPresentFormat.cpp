@@ -25,14 +25,14 @@ void writeTypePostDecoratorAsSpaces(stringstream &ss)
 
 string IsPresentFormat::toStr(size_t indent,
                               size_t maxNameSize,
-                              size_t maxDataSize,
+                              size_t maxDefaultsSize,
                               size_t maxTypeSize) const
 {
   stringstream ss;
   writeIndentation(ss, indent);
   writeAlignedString(ss, argumentName, maxNameSize);
   writeDefaultsSeparatorAsSpaces(ss);
-  writeSpaces(ss, maxDataSize);
+  writeSpaces(ss, maxDefaultsSize);
   writeTypePreDecoratorAsSpaces(ss);
   writeSpaces(ss, maxTypeSize);
   writeTypePostDecoratorAsSpaces(ss);

@@ -7,7 +7,7 @@ template <typename TYPE>
 class SingleValueFormat : public ValueFormat {
  public:
   SingleValueFormat(string const &argument, TYPE const &def, string const &com);
-  virtual string      getData() const override;
+  virtual string      getDefaults() const override;
   virtual string      getType() const override;
   virtual MatchStatus match(vector<string> const &args,
                             size_t &              index) const override;
@@ -21,7 +21,7 @@ SingleValueFormat<TYPE>::SingleValueFormat(string const &argument,
     : ValueFormat(argument, com), defaults(def) {}
 
 template <typename TYPE>
-string SingleValueFormat<TYPE>::getData() const {
+string SingleValueFormat<TYPE>::getDefaults() const {
   if (is_same<TYPE, string>::value) {
     auto x = txtUtils::valueToString(defaults);
     return chopQuotes(x);

@@ -18,11 +18,11 @@ class ArgumentListFormat : public Format {
 
  protected:
   void getLargestLengths(size_t &nameLength,
-                         size_t &dataLength,
+                         size_t &defaultsLength,
                          size_t &typeLength) const;
   void writeIndentedNonContextFormats(stringstream &ss,
                                       size_t        nameLength,
-                                      size_t        dataLength,
+                                      size_t        defaultsLength,
                                       size_t        typeLength,
                                       size_t        indent) const;
   void writeContextFormats(stringstream &ss, size_t indent) const;

@@ -15,46 +15,46 @@ bool isContextFormat(shared_ptr<Format> const &x)
 
 void updateLengthsIfFoundLarger(
     size_t &nameLength,
-    size_t &dataLength,
+    size_t &defaultsLength,
     size_t &typeLength,
     shared_ptr<Format>const&format){
   auto vf = dynamic_pointer_cast<ValueFormat>(format);
   if (!vf) return;
   nameLength = max(nameLength, vf->getName().length());
-  dataLength = max(dataLength, vf->getDataLength());
+  defaultsLength = max(defaultsLength, vf->getDefaultsLength());
   typeLength = max(typeLength, vf->getType().length());
 }
 
 void ArgumentListFormat::getLargestLengths(size_t &nameLength,
-                                           size_t &dataLength,
+                                           size_t &defaultsLength,
                                            size_t &typeLength) const
 {
   nameLength = 0;
-  dataLength = 0;
+  defaultsLength = 0;
   typeLength = 0;
   for (auto const &x : formats)
-    updateLengthsIfFoundLarger(nameLength,dataLength,typeLength,x.second);
+    updateLengthsIfFoundLarger(nameLength,defaultsLength,typeLength,x.second);
 }
 
 void writeNonContextFormat(stringstream &            ss,
                            shared_ptr<Format> const &format,
                            size_t                    nameLength,
-                           size_t                    dataLength,
+                           size_t                    defaultsLength,
                            size_t                    typeLength,
                            size_t                    indent)
 {
   if (isContextFormat(format)) return;
-  ss << format->toStr(indent, nameLength, dataLength, typeLength);
+  ss << format->toStr(indent, nameLength, defaultsLength, typeLength);
 }
 
 void ArgumentListFormat::writeIndentedNonContextFormats(stringstream &ss,
                                                         size_t nameLength,
-                                                        size_t dataLength,
+                                                        size_t defaultsLength,
                                                         size_t typeLength,
                                                         size_t indent) const
 {
   for (auto const &x : formats)
-    writeNonContextFormat(ss, x.second, nameLength, dataLength, typeLength,
+    writeNonContextFormat(ss, x.second, nameLength, defaultsLength, typeLength,
                           indent);
 }
 
@@ -76,10 +76,10 @@ string ArgumentListFormat::toStr(size_t indent, size_t, size_t, size_t) const
 {
   stringstream ss;
   size_t       nameLength = 0;
-  size_t       dataLength = 0;
+  size_t       defaultsLength = 0;
   size_t       typeLength = 0;
-  getLargestLengths(nameLength, dataLength, typeLength);
-  writeIndentedNonContextFormats(ss, nameLength, dataLength, typeLength,
+  getLargestLengths(nameLength, defaultsLength, typeLength);
+  writeIndentedNonContextFormats(ss, nameLength, defaultsLength, typeLength,
                                  indent);
   writeContextFormats(ss, indent);
   return ss.str();
