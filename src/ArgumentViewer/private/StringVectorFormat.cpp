@@ -40,33 +40,35 @@ size_t StringVectorFormat::getDataLength() const {
 
 string StringVectorFormat::getType() const { return "string*"; }
 
+void throwIfArgumentsDoesNotContainContextBegin(vector<string> const &args,size_t &index,string const&argumentName){
+  if (args.at(index) == contextBegin) return;
+  stringstream ss;
+  ss << "Argument error:" << endl;
+  ss << "expected " << contextBegin << " after argument: " << argumentName;
+  ss << " not argument: " << args.at(index);
+  throw MatchError(ss.str());
+}
+
+void throwIfArgumentsUbrupltlyEnds(vector<string> const &args,size_t &index,string const&argumentName){
+  if (index < args.size()) return;
+  stringstream ss;
+  ss << "Argument error:" << endl;
+  ss << "expected " << contextEnd
+     << " at the end of context argument: " << argumentName;
+  ss << " not end of arguments";
+  throw MatchError(ss.str());
+}
+
 Format::MatchStatus StringVectorFormat::match(vector<string> const &args,
                                               size_t &index) const {
   if (index >= args.size()) return MATCH_FAILURE;
   size_t oldIndex = index;
   if (args.at(index) != argumentName) return MATCH_FAILURE;
   ++index;
-  if (args.at(index) != contextBegin) {
-    index = oldIndex;
-    stringstream ss;
-    ss << "Argument error:" << endl;
-    ss << "expected " << contextBegin << " after argument: " << argumentName;
-    ss << " not argument: " << args.at(index);
-    throw MatchError(ss.str());
-    return MATCH_ERROR;
-  }
+  throwIfArgumentsDoesNotContainContextBegin(args,index,argumentName);
   ++index;
   while (index < args.size() && args.at(index) != contextEnd) ++index;
-  if (index >= args.size()) {
-    index = oldIndex;
-    stringstream ss;
-    ss << "Argument error:" << endl;
-    ss << "expected " << contextEnd
-       << " at the end of context argument: " << argumentName;
-    ss << " not end of arguments";
-    throw MatchError(ss.str());
-    return MATCH_ERROR;
-  }
+  throwIfArgumentsUbrupltlyEnds(args,index,argumentName);
   ++index;
   return MATCH_SUCCESS;
 }
