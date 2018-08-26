@@ -21,9 +21,16 @@ class argumentViewer::ArgumentViewerImpl {
   vector<string>        arguments;
   ArgumentViewer const *parent = nullptr;
   shared_ptr<Format>    format = nullptr;
+  bool validate()const;
+  string toStr()const;
+  string getApplicationName()const;
+  size_t getNofArguments()const;
+  bool isPresent(string const&argument,string const&com)const;
+  shared_ptr<ArgumentViewer>getContext(string const&name,string const&com,ArgumentViewer const*_this)const;
   size_t                getArgumentPosition(string const &argument) const;
   bool                  getContext(vector<string> &contextArguments,
                                    string const &  argument) const;
+  vector<string>        getsv(string const&argument,vector<string>const&def,string const&com)const;
   bool                  isInRange(size_t index) const;
   string                getArgument(size_t index) const;
   void loadArgumentFiles(vector<string> &args, set<string> &alreadyLoaded);

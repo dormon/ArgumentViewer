@@ -1,14 +1,10 @@
 #include <ArgumentViewer/ArgumentViewer.h>
 #include <ArgumentViewer/Exception.h>
-#include <MealyMachine/MealyMachine.h>
-#include <TxtUtils/TxtUtils.h>
 #include <ArgumentViewer/private/ArgumentViewerImpl.h>
 #include <ArgumentViewer/private/ArgumentListFormat.h>
-#include <ArgumentViewer/private/IsPresentFormat.h>
-#include <ArgumentViewer/private/CommonFunctions.h>
-#include <ArgumentViewer/private/StringVectorFormat.h>
-#include <ArgumentViewer/private/ContextFormat.h>
 
+#include <MealyMachine/MealyMachine.h>
+#include <TxtUtils/TxtUtils.h>
 #include <algorithm>
 #include <cassert>
 #include <map>
@@ -54,8 +50,7 @@ ArgumentViewer::~ArgumentViewer() {}
  * @return application name
  */
 std::string ArgumentViewer::getApplicationName() const {
-  assert(impl != nullptr);
-  return impl->applicationName;
+  return impl->getApplicationName();
 }
 
 /**
@@ -64,8 +59,7 @@ std::string ArgumentViewer::getApplicationName() const {
  * @return number of arguments without inclusion of application name
  */
 size_t ArgumentViewer::getNofArguments() const {
-  assert(impl != nullptr);
-  return impl->arguments.size();
+  return impl->getNofArguments();
 }
 
 /**
@@ -91,24 +85,7 @@ std::string ArgumentViewer::getArgument(size_t const &index) const {
  */
 bool ArgumentViewer::isPresent(std::string const &argument,
                                std::string const &com) const {
-  assert(impl != nullptr);
-
-  auto alf = std::dynamic_pointer_cast<ArgumentListFormat>(impl->format);
-  assert(alf != nullptr);
-
-  auto subFormatIt = alf->formats.find(argument);
-  if (subFormatIt != alf->formats.end()) {
-    auto subFormat = subFormatIt->second;
-    if (!isTypeOf<IsPresentFormat>(subFormat))
-      throw ex::Exception(
-          std::string("argument: ") + argument +
-          " is already defined as something else than isPresent format");
-  } else
-    alf->formats[argument] = std::make_shared<IsPresentFormat>(argument, com);
-  if (alf->formats[argument]->comment == "")
-    alf->formats[argument]->comment = com;
-
-  return impl->getArgumentPosition(argument) < impl->arguments.size();
+  return impl->isPresent(argument,com);
 }
 
 /**
@@ -336,36 +313,7 @@ std::vector<uint64_t> ArgumentViewer::getu64v(std::string const &argument,
  */
 std::shared_ptr<ArgumentViewer> ArgumentViewer::getContext(
     std::string const &name, std::string const &com) const {
-  assert(impl != nullptr);
-  auto alf = std::dynamic_pointer_cast<ArgumentListFormat>(impl->format);
-  assert(alf != nullptr);
-
-  auto constructEmptyContext = [&]() {
-    char const *argv[]    = {impl->applicationName.c_str()};
-    auto        result    = std::make_shared<ArgumentViewer>(1, (char **)argv);
-    result->impl->parent = this;
-    result->impl->format = alf->formats[name];
-    return result;
-  };
-
-  auto subFormatIt = alf->formats.find(name);
-  if (subFormatIt != alf->formats.end()) {
-    auto subFormat = subFormatIt->second;
-    if (!isTypeOf<ContextFormat>(subFormat))
-      throw ex::Exception(std::string("argument: ") + name +
-                          " is already defined as something else than context");
-  } else
-    alf->formats[name] = std::make_shared<ContextFormat>(name, com);
-  if (alf->formats[name]->comment == "") alf->formats[name]->comment = com;
-
-  std::vector<std::string> subArguments;
-  if (!impl->getContext(subArguments, name)) return constructEmptyContext();
-  char const *appName[] = {impl->applicationName.c_str()};
-  auto        result    = std::make_shared<ArgumentViewer>(1, (char **)appName);
-  result->impl->parent = this;
-  result->impl->arguments = subArguments;
-  result->impl->format    = alf->formats.at(name);
-  return result;
+  return impl->getContext(name,com,this);
 }
 
 /**
@@ -382,48 +330,13 @@ std::vector<std::string> ArgumentViewer::getsv(
     std::string const &             argument,
     std::vector<std::string> const &def,
     std::string const &             com) const {
-  assert(impl != nullptr);
-
-  auto alf = std::dynamic_pointer_cast<ArgumentListFormat>(impl->format);
-  assert(alf != nullptr);
-
-  auto subFormatIt = alf->formats.find(argument);
-  if (subFormatIt != alf->formats.end()) {
-    auto subFormat = subFormatIt->second;
-    auto stringVectorFormat =
-        std::dynamic_pointer_cast<StringVectorFormat>(subFormat);
-    if (!stringVectorFormat)
-      throw ex::Exception(
-          std::string("argument: ") + argument +
-          " is already defined as something else than vector of string values");
-    if (stringVectorFormat->defaults != def)
-      throw ex::Exception(
-          std::string("argument: ") + argument +
-          " has already been defined with different default values: "+txtUtils::valueToString(stringVectorFormat->defaults));
-  } else
-    alf->formats[argument] =
-        std::make_shared<StringVectorFormat>(argument, def, com);
-  if (alf->formats[argument]->comment == "")
-    alf->formats[argument]->comment = com;
-
-  std::vector<std::string> subArguments;
-  if (!impl->getContext(subArguments, argument)) return def;
-  while (def.size() > subArguments.size())
-    subArguments.push_back(def[subArguments.size()]);
-  for (auto &x : subArguments) x = parseEscapeSequence(x);
-  return subArguments;
+  return impl->getsv(argument,def,com);
 }
 
 std::string ArgumentViewer::toStr() const {
-  assert(impl != nullptr);
-  return impl->format->toStr();
+  return impl->toStr();
 }
 
 bool ArgumentViewer::validate() const {
-  assert(impl != nullptr);
-  assert(impl->format != nullptr);
-  if (impl->parent != nullptr)
-    throw ex::Exception("validation cannot be run on sub ArgumentViewer");
-  size_t index = 0;
-  return impl->format->match(impl->arguments, index) == Format::MATCH_SUCCESS;
+  return impl->validate();
 }
