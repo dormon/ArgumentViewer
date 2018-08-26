@@ -13,27 +13,28 @@ bool isContextFormat(shared_ptr<Format> const &x)
   return isTypeOf<ContextFormat>(x);
 }
 
-void updateLengthsIfFoundLarger(
-    size_t &nameLength,
-    size_t &defaultsLength,
-    size_t &typeLength,
-    shared_ptr<Format>const&format){
+void updateLengthsIfFoundLarger(size_t &                  nameLength,
+                                size_t &                  defaultsLength,
+                                size_t &                  typeLength,
+                                shared_ptr<Format> const &format)
+{
   auto vf = dynamic_pointer_cast<ValueFormat>(format);
   if (!vf) return;
-  nameLength = max(nameLength, vf->getName().length());
+  nameLength     = max(nameLength, vf->getName().length());
   defaultsLength = max(defaultsLength, vf->getDefaultsLength());
-  typeLength = max(typeLength, vf->getType().length());
+  typeLength     = max(typeLength, vf->getType().length());
 }
 
 void ArgumentListFormat::getLargestLengths(size_t &nameLength,
                                            size_t &defaultsLength,
                                            size_t &typeLength) const
 {
-  nameLength = 0;
+  nameLength     = 0;
   defaultsLength = 0;
-  typeLength = 0;
+  typeLength     = 0;
   for (auto const &x : formats)
-    updateLengthsIfFoundLarger(nameLength,defaultsLength,typeLength,x.second);
+    updateLengthsIfFoundLarger(nameLength, defaultsLength, typeLength,
+                               x.second);
 }
 
 void writeNonContextFormat(stringstream &            ss,
@@ -75,9 +76,9 @@ void ArgumentListFormat::writeContextFormats(stringstream &ss,
 string ArgumentListFormat::toStr(size_t indent, size_t, size_t, size_t) const
 {
   stringstream ss;
-  size_t       nameLength = 0;
+  size_t       nameLength     = 0;
   size_t       defaultsLength = 0;
-  size_t       typeLength = 0;
+  size_t       typeLength     = 0;
   getLargestLengths(nameLength, defaultsLength, typeLength);
   writeIndentedNonContextFormats(ss, nameLength, defaultsLength, typeLength,
                                  indent);
@@ -109,26 +110,48 @@ void throwIfFormatForRemovalIsEmpty(string const &        formatForRemoval,
   throw MatchError(ss.str());
 }
 
+string ArgumentListFormat::matchOneUnusedFormat(
+    set<string> const &   unusedFormats,
+    vector<string> const &args,
+    size_t &              index) const
+{
+  for (auto const &f : unusedFormats) {
+    auto const status = formats.at(f)->match(args, index);
+    if (status == MATCH_SUCCESS) return f;
+  }
+  return "";
+}
+
+set<string> ArgumentListFormat::getUnusedFormats() const
+{
+  set<string> unusedFormats;
+  for (auto const &x : formats) unusedFormats.insert(x.first);
+  return unusedFormats;
+}
+
+void ArgumentListFormat::checkAndMatchOneUnusedFormat(
+    set<string> &         unusedFormats,
+    vector<string> const &args,
+    size_t &              index) const
+{
+  throwIfUnusedFormatsIsEmpty(unusedFormats, args, index);
+  string formatForRemoval = matchOneUnusedFormat(unusedFormats, args, index);
+  throwIfFormatForRemovalIsEmpty(formatForRemoval, args, index);
+  unusedFormats.erase(formatForRemoval);
+}
+
+void ArgumentListFormat::matchUnusedFormats(set<string> &         unusedFormats,
+                                            vector<string> const &args,
+                                            size_t &              index) const
+{
+  while (index < args.size())
+    checkAndMatchOneUnusedFormat(unusedFormats, args, index);
+}
+
 Format::MatchStatus ArgumentListFormat::match(vector<string> const &args,
                                               size_t &              index) const
 {
-  size_t      oldIndex = index;
-  set<string> unusedFormats;
-  for (auto const &x : formats) unusedFormats.insert(x.first);
-  while (index < args.size()) {
-    throwIfUnusedFormatsIsEmpty(unusedFormats, args, index);
-
-    string formatForRemoval = "";
-    for (auto const &f : unusedFormats) {
-      auto status = formats.at(f)->match(args, index);
-      if (status == MATCH_FAILURE) continue;
-      formatForRemoval = f;
-      break;
-    }
-
-    throwIfFormatForRemovalIsEmpty(formatForRemoval, args, index);
-
-    unusedFormats.erase(formatForRemoval);
-  }
+  auto unusedFormats = getUnusedFormats();
+  matchUnusedFormats(unusedFormats, args, index);
   return MATCH_SUCCESS;
 }
