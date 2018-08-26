@@ -1,7 +1,10 @@
 #pragma once
 
-#include <ArgumentViewer/private/ValueFormat.h>
+#include <ArgumentViewer/Exception.h>
 #include <ArgumentViewer/private/CommonFunctions.h>
+#include <ArgumentViewer/private/ValueFormat.h>
+
+using namespace argumentViewer;
 
 template <typename TYPE>
 class SingleValueFormat : public ValueFormat {
@@ -18,10 +21,13 @@ template <typename TYPE>
 SingleValueFormat<TYPE>::SingleValueFormat(string const &argument,
                                            TYPE const &  def,
                                            string const &com)
-    : ValueFormat(argument, com), defaults(def) {}
+    : ValueFormat(argument, com), defaults(def)
+{
+}
 
 template <typename TYPE>
-string SingleValueFormat<TYPE>::getDefaults() const {
+string SingleValueFormat<TYPE>::getDefaults() const
+{
   if (is_same<TYPE, string>::value) {
     auto x = txtUtils::valueToString(defaults);
     return chopQuotes(x);
@@ -30,25 +36,49 @@ string SingleValueFormat<TYPE>::getDefaults() const {
 }
 
 template <typename TYPE>
-string SingleValueFormat<TYPE>::getType() const {
+string SingleValueFormat<TYPE>::getType() const
+{
   return typeName<TYPE>();
 }
 
 template <typename TYPE>
+void throwIfArgumentIsNotFollowedByValueButArgumentsEnds(
+    vector<string> const &args,
+    size_t &              index,
+    string const &        argumentName)
+{
+  if (index < args.size()) return;
+  stringstream ss;
+  ss << "Single value argument: " << argumentName
+     << " should be followed by value of type: " << typeName<TYPE>()
+     << " not by end of arguments";
+  throw ex::MatchError(ss.str());
+}
+
+template <typename TYPE>
+void throwIfArgumentIsNotFollowedByCompatibleValue(vector<string> const &args,
+                                                  size_t &              index,
+                                                  string const &argumentName)
+{
+  if (isValueConvertibleTo<TYPE>(args.at(index))) return;
+  stringstream ss;
+  ss << "Single value argument: " << argumentName
+     << " should be followed by value of type: " << typeName<TYPE>()
+     << " not by: " << args.at(index);
+  throw ex::MatchError(ss.str());
+}
+
+template <typename TYPE>
 Format::MatchStatus SingleValueFormat<TYPE>::match(vector<string> const &args,
-                                                   size_t &index) const {
+                                                   size_t &index) const
+{
   size_t oldIndex = index;
   if (index >= args.size()) return MATCH_FAILURE;
   if (args.at(index) != argumentName) return MATCH_FAILURE;
   ++index;
-  if (index >= args.size()) {
-    index = oldIndex;
-    return MATCH_ERROR;
-  }
-  if (!isValueConvertibleTo<TYPE>(args.at(index))) {
-    index = oldIndex;
-    return MATCH_ERROR;
-  }
+  throwIfArgumentIsNotFollowedByValueButArgumentsEnds<TYPE>(args, index,
+                                                            argumentName);
+  throwIfArgumentIsNotFollowedByCompatibleValue<TYPE>(args, index, argumentName);
   ++index;
   return MATCH_SUCCESS;
 }

@@ -15,8 +15,6 @@ class Format {
     MATCH_SUCCESS,
     // match was unsuccessful at the beginning
     MATCH_FAILURE,
-    // error was encountered in the middle of matching
-    MATCH_ERROR
   };
   virtual string      toStr(size_t indent      = 0,
                             size_t maxNameSize = 0,

@@ -121,14 +121,9 @@ Format::MatchStatus ArgumentListFormat::match(vector<string> const &args,
     string formatForRemoval = "";
     for (auto const &f : unusedFormats) {
       auto status = formats.at(f)->match(args, index);
-      if (status == MATCH_ERROR) {
-        index = oldIndex;
-        return MATCH_ERROR;
-      }
-      if (status == MATCH_SUCCESS) {
-        formatForRemoval = f;
-        break;
-      }
+      if (status == MATCH_FAILURE) continue;
+      formatForRemoval = f;
+      break;
     }
 
     throwIfFormatForRemovalIsEmpty(formatForRemoval, args, index);

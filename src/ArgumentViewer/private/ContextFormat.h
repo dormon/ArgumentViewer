@@ -5,13 +5,13 @@
 
 class ContextFormat : public ArgumentListFormat {
  public:
-  std::string argumentName;
-  ContextFormat(std::string const &argument, std::string const &com);
+  string argumentName;
+  ContextFormat(string const &argument, string const &com);
 
-  virtual std::string toStr(size_t indent,
+  virtual string toStr(size_t indent,
                             size_t = 0,
                             size_t = 0,
                             size_t = 0) const override;
-  virtual MatchStatus match(std::vector<std::string> const &args,
+  virtual MatchStatus match(vector<string> const &args,
                             size_t &index) const override;
 };

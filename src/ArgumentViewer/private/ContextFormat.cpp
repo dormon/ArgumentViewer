@@ -4,94 +4,106 @@
 
 using namespace argumentViewer::ex;
 
-ContextFormat::ContextFormat(std::string const &argument,
-                             std::string const &com)
+ContextFormat::ContextFormat(string const &argument,
+                             string const &com)
     : ArgumentListFormat(com), argumentName(argument) {}
 
 string ContextFormat::toStr(size_t indent, size_t, size_t, size_t) const {
-  std::stringstream ss;
+  stringstream ss;
   for (size_t i = 0; i < indent; ++i) ss << " ";
   ss << argumentName << " ";
-  ss << contextBegin << " - " << comment << std::endl;
+  ss << contextBegin << " - " << comment << endl;
   ss << ArgumentListFormat::toStr(indent + 2);
   for (size_t i = 0; i < indent; ++i) ss << " ";
-  ss << contextEnd << std::endl;
+  ss << contextEnd << endl;
   return ss.str();
 }
 
-Format::MatchStatus ContextFormat::match(std::vector<std::string> const &args,
+void throwIfIndexIsOutOfRange(vector<string> const &args,size_t &index,string const&argumentName){
+  if (index < args.size()) return;
+  stringstream ss;
+  ss << "Argument error:" << endl;
+  ss << "expected " << contextBegin
+     << " after context argument: " << argumentName;
+  ss << " not end of arguments";
+  throw MatchError(ss.str());
+}
+
+void throwIfArgumentIsNotContextBegin(vector<string> const &args,size_t &index,string const&argumentName){
+  if (args.at(index) == contextBegin) return;
+  stringstream ss;
+  ss << "Argument error:" << endl;
+  ss << "expected " << contextBegin
+     << " after context argument: " << argumentName;
+  ss << " not: " << args.at(index);
+  throw MatchError(ss.str());
+}
+
+void throwIfUnusedFormatsIsEmpty(vector<string> const &args,size_t &index,set<string>const&unusedFormats,string const&argumentName){
+  if (!unusedFormats.empty()) return;
+  stringstream ss;
+  ss << "Argument error:" << endl;
+  ss << "following arguments do not belong in context: " << argumentName
+     << ": " << endl;
+  for (size_t i = index; i < args.size(); ++i) ss << args.at(i) << " ";
+  throw MatchError(ss.str());
+}
+
+void throwIfFromatForRemovalIsEmpty(string const&formatForRemoval,vector<string>const&args,size_t&index,string const&argumentName){
+  if (formatForRemoval != "") return;
+  stringstream ss;
+  ss << "Argument error:" << endl;
+  ss << "argument: " << args.at(index)
+     << " does not belong in context: " << argumentName;
+  throw MatchError(ss.str());
+}
+
+void throwIfArgumentsUbruptlyEnds(vector<string>const&args,size_t&index,string const&argumentName){
+  if (index < args.size()) return;
+  stringstream ss;
+  ss << "Argument error:" << endl;
+  ss << "expected " << contextEnd
+     << " at the end of context: " << argumentName;
+  ss << " not end of arguments";
+  throw MatchError(ss.str());
+}
+
+void throwIfArgumentsDoNotContainContextEnd(vector<string>const&args,size_t&index,string const&argumentName){
+  if (args.at(index) == contextEnd)return;
+  stringstream ss;
+  ss << "Argument error:" << endl;
+  ss << "expected " << contextEnd
+     << " at the end of context: " << argumentName;
+  ss << " not argument: " << args.at(index);
+  throw MatchError(ss.str());
+}
+
+Format::MatchStatus ContextFormat::match(vector<string> const &args,
                                          size_t &index) const {
   size_t oldIndex = index;
   if (index >= args.size()) return MATCH_FAILURE;
   if (args.at(index) != argumentName) return MATCH_FAILURE;
   ++index;
-  if (index >= args.size()) {
-    index = oldIndex;
-    std::stringstream ss;
-    ss << "Argument error:" << std::endl;
-    ss << "expected " << contextBegin
-       << " after context argument: " << argumentName;
-    ss << " not end of arguments";
-    throw MatchError(ss.str());
-    return MATCH_ERROR;
-  }
-  if (args.at(index) != contextBegin) {
-    index = oldIndex;
-    std::stringstream ss;
-    ss << "Argument error:" << std::endl;
-    ss << "expected " << contextBegin
-       << " after context argument: " << argumentName;
-    ss << " not: " << args.at(index);
-    throw MatchError(ss.str());
-    return MATCH_ERROR;
-  }
+  throwIfIndexIsOutOfRange(args,index,argumentName);
+  throwIfArgumentIsNotContextBegin(args,index,argumentName);
   ++index;
-  std::set<std::string> unusedFormats;
+  set<string> unusedFormats;
   for (auto const &x : formats) unusedFormats.insert(x.first);
   while (index < args.size() &&
          args.at(index) != contextEnd) {
-    if (unusedFormats.empty()) {
-      index = oldIndex;
-      std::stringstream ss;
-      ss << "Argument error:" << std::endl;
-      ss << "following arguments do not belong in context: " << argumentName
-         << ": " << std::endl;
-      for (size_t i = index; i < args.size(); ++i) ss << args.at(i) << " ";
-      throw MatchError(ss.str());
-      return MATCH_ERROR;
-    }
-    std::string formatForRemoval = "";
+    throwIfUnusedFormatsIsEmpty(args,index,unusedFormats,argumentName);
+    string formatForRemoval = "";
     for (auto const &f : unusedFormats) {
       auto status = formats.at(f)->match(args, index);
-      if (status == MATCH_ERROR) {
-        index = oldIndex;
-        return MATCH_ERROR;
-      }
-      if (status == MATCH_SUCCESS) {
-        formatForRemoval = f;
-        break;
-      }
+      if (status == MATCH_FAILURE) continue;
+      formatForRemoval = f;
+      break;
     }
-    if (formatForRemoval == "") {
-      std::stringstream ss;
-      ss << "Argument error:" << std::endl;
-      ss << "argument: " << args.at(index)
-         << " does not belong in context: " << argumentName;
-      throw MatchError(ss.str());
-      index = oldIndex;
-      return MATCH_ERROR;
-    }
+    throwIfFromatForRemovalIsEmpty(formatForRemoval,args,index,argumentName);
+    unusedFormats.erase(formatForRemoval);
   }
-  if (index >= args.size()) {
-    index = oldIndex;
-    std::stringstream ss;
-    ss << "Argument error:" << std::endl;
-    ss << "expected " << contextEnd
-       << " at the end of context: " << argumentName;
-    ss << " not end of arguments";
-    throw MatchError(ss.str());
-    return MATCH_ERROR;
-  }
+  throwIfArgumentsUbruptlyEnds(args,index,argumentName);
+  throwIfArgumentsDoNotContainContextEnd(args,index,argumentName);
   ++index;
   return MATCH_SUCCESS;
 }
