@@ -3,6 +3,7 @@
 #include <ArgumentViewer/private/CommonFunctions.h>
 #include <ArgumentViewer/private/ContextFormat.h>
 #include <set>
+#include <algorithm>
 
 using namespace argumentViewer::ex;
 

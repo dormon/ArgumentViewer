@@ -2,6 +2,7 @@
 #include <ArgumentViewer/private/Globals.h>
 #include <ArgumentViewer/private/LineSplitter.h>
 #include <ArgumentViewer/private/StringVectorFormat.h>
+#include <algorithm>
 
 using namespace argumentViewer::ex;
 
