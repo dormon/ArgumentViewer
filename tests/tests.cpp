@@ -2,7 +2,6 @@
 #include<iostream>
 #include<fstream>
 
-#define CATCH_CONFIG_MAIN
 #include<catch.hpp>
 
 using namespace argumentViewer;
