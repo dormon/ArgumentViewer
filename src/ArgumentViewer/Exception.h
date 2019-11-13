@@ -21,7 +21,4 @@ class argumentViewer::ex::MatchError : public Exception {
   MatchError(std::string const& msg) : Exception(msg) {
     message = std::string("ArgumentViewer::match - ") + std::string(msg);
   }
-  virtual char const* what() const throw() override {
-    return message.c_str();
-  }
 };
