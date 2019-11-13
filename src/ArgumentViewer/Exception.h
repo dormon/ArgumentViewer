@@ -6,21 +6,22 @@
 
 class argumentViewer::ex::Exception : public std::runtime_error {
  public:
-  Exception(std::string const& msg) : std::runtime_error(msg) {}
+  Exception(std::string const& msg) : std::runtime_error(msg) {
+    message = std::string("ArgumentViewer - ") + std::string(msg);
+  }
   virtual ~Exception() throw() {}
   virtual char const* what() const throw() override {
-    return std::string(std::string("ArgumentViewer - ") +
-                       std::runtime_error::what())
-        .c_str();
+    return message.c_str();
   }
+  std::string message;
 };
 
 class argumentViewer::ex::MatchError : public Exception {
  public:
-  MatchError(std::string const& msg) : Exception(msg) {}
+  MatchError(std::string const& msg) : Exception(msg) {
+    message = std::string("ArgumentViewer::match - ") + std::string(msg);
+  }
   virtual char const* what() const throw() override {
-    return std::string(std::string("ArgumentViewer::match - ") +
-                       std::runtime_error::what())
-        .c_str();
+    return message.c_str();
   }
 };
