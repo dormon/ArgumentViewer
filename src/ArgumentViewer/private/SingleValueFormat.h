@@ -30,6 +30,7 @@ string SingleValueFormat<TYPE>::getDefaults() const
 {
   if (is_same<TYPE, string>::value) {
     auto x = txtUtils::valueToString(defaults);
+    if(x=="\"\""||x=="")return "\"\"";
     return chopQuotes(x);
   }
   return txtUtils::valueToString(defaults);

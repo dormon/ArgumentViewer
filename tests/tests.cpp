@@ -185,7 +185,14 @@ SCENARIO("ArgumentViewer file tests"){
   //std::cerr<<a->toStr()<<std::endl;
 }
 
-
+SCENARIO("Empty default string parameter"){
+  char const*args[] = {"test","a","b","light","{","a","b","c","}","d"};
+  int const nofArgs = sizeof(args)/sizeof(char const*);
+  auto a = make_shared<ArgumentViewer>(nofArgs,(char**)args);
+  a->gets("--name","","empty");
+  REQUIRE(a->toStr() == R".(--name = "" [string] - empty
+).");
+}
 
 
 
